@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Lab 02</title>
+		<style type="text/css">
+			div{
+				padding: 5px;
+				margin: 10px;
+			}
+			h2 {
+				margin: 5px;
+			}
+			input {
+				margin-left: 20%;
+			}
+			table {
+				margin: auto;
+				width: 70%
+			}
+			table, th, td {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+			th, td {
+				padding: 5px;
+				text-align: left;
+			}
+			.text-center {
+				text-align: center;
+			}
+			.element-center {
+				margin: auto;
+				width: 20%;
+			}
+			.head-row {
+				background-color: #BBBBBB;
+			}
+			.odd-row {
+				background-color: #DDDDDD;
+			}
+			.even-row {
+				background-color: #EEEEEE;
+			}
+			.active {
+				background-color: green;
+			}
+			.inactive {
+				background-color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="text-center">
+			<h1>Lab 3</h1>
+			<h2>Dhanesh kumar - dhanesh.chandrasekaran1@marist.edu</h2>
+		</div>
+		<div class="element-center">
+			<input type="button" id="run_lab" value="Run Lab">
+			<input type="button" id="reset_lab" value="Reset Lab">
+		</div>
+		<div id="result">
+			<table>
+				<caption>
+					<h2>Employee List</h2>
+					</caption>
+				<thead>
+					<tr class="head-row">
+						<th>ID</th>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Title</th>
+						<th>Email</th>
+						<th>Gender</th>
+						<th>Active</th>
+					</tr>
+				</thead>
+				<tbody id="data-rows">
+				</tbody>
+			</table>
+		</div>
+		<script type="text/javascript">
+			var runBtn = document.getElementById('run_lab');
+			var resetBtn = document.getElementById('reset_lab');
+			var dataRows = document.getElementById('data-rows');
+
+			function insertRows(tableData) {
+				dataObjects = JSON.parse(tableData);
+				//Clear the result layer
+				clearRows();
+				//Iterate through the array of JSON objects
+				for(var index = 0; index < dataObjects.length; index++) {
+					//Get the ith data object
+					dataObject = dataObjects[index];
+					//Create table row
+					var rowElement = document.createElement('tr');
+					//Create data cells
+					var idCell = document.createElement('td');
+					var firstNameCell = document.createElement('td');
+					var lastNameCell = document.createElement('td');
+					var titleCell = document.createElement('td');
+					var emailCell = document.createElement('td');
+					var genderCell = document.createElement('td');
+					var activeCell = document.createElement('td');
+					//Append data to cells
+					idCell.appendChild(document.createTextNode(dataObject['id']));
+					firstNameCell.appendChild(document.createTextNode(dataObject['first_name']));
+					lastNameCell.appendChild(document.createTextNode(dataObject['last_name']));
+					titleCell.appendChild(document.createTextNode(dataObject['title']));
+					emailCell.appendChild(document.createTextNode(dataObject['email']));
+					genderCell.appendChild(document.createTextNode(dataObject['gender']));
+					activeCell.appendChild(document.createTextNode(dataObject['active']));
+					//Append cells to row
+					rowElement.appendChild(idCell);
+					rowElement.appendChild(firstNameCell);
+					rowElement.appendChild(lastNameCell);
+					rowElement.appendChild(titleCell);
+					rowElement.appendChild(emailCell);
+					rowElement.appendChild(genderCell);
+					rowElement.appendChild(activeCell);
+					//Add css class for row differentiation
+					if(index % 2 == 0) {
+						rowElement.className = 'even-row';
+					} else {
+						rowElement.className = 'odd-row';
+					}
+					//Add css class for active cell
+					if(dataObject['active']) {
+						activeCell.className = 'active';
+					} else {
+						activeCell.className = 'inactive';
+					}
+					//Append row to table
+					dataRows.appendChild(rowElement);
+				}
+				//Enable the reset button
+				resetBtn.disabled = false;
+				//Disable the run button
+				runBtn.disabled = true;
+			}
+
+			function runLab() {
+				//For most Browsers
+				if (window.XMLHttpRequest) {
+					ajaxRequest = new XMLHttpRequest();
+				} else {
+					//For Internet Explorer
+					try {
+						ajaxRequest = new ActiveXObject('MSXML2.XMLHTTP.3.0');
+					} catch(exception) {
+						ajaxRequest = null;
+					}
+				}
+				//If AJAX object cannot be created, do nothing
+				if (ajaxRequest == null) {
+					return;
+				}
+				//Define AJAX data source
+				ajaxRequest.open('GET', 'http://libertyville.rice.iit.edu/scripts/lab2.php', true);
+				//Define method to execute on success
+				ajaxRequest.onreadystatechange = function() {
+					//If not ready, do nothing
+					if (ajaxRequest.readyState != 4) {
+						return;
+					}
+					var data = ajaxRequest.responseText;
+					//If data is invalid, do nothing
+					if(data == null || data == '') {
+						return;
+					}
+					//Construct rows
+					insertRows(data);
+				};
+				//Send the AJAX request
+				ajaxRequest.send();
+			}
+
+			function resetLab() {
+				//Clear the table rows
+				clearRows();
+				//Enable the run button
+				runBtn.disabled = false;
+				//Disable the reset button
+				resetBtn.disabled = true;
+			}
+
+			function clearRows() {
+				while (dataRows.firstChild) {
+					dataRows.removeChild(dataRows.firstChild);
+				}
+			}
+
+			//Disable the reset button initially
+			resetBtn.disabled = true;
+			//Attach the click event listener to run button
+			runBtn.addEventListener('click', runLab);
+			//Attach the click event listener to reset button
+			resetBtn.addEventListener('click', resetLab);
+		</script>
+	</body>
+</html>

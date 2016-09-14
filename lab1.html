@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Lab 01</title>
+		<style type="text/css">
+			input, select {
+				position: absolute;
+				left: 100px;
+			}
+			#run_lab {
+				left: 50px;
+			}
+			#reset_lab {
+				left: 150px;
+			}
+			div{
+				padding: 5px;
+				margin: 10px;
+			}
+			p, h2 {
+				margin: 5px;
+			}
+			.text_red {
+				color: red;
+			}
+			.text_green {
+				color: green;
+			}
+			.text_blue {
+				color: blue;
+			}
+			.border_red {
+				border: 2px solid red;
+			}
+			.border_green {
+				border: 2px solid green;
+			}
+			.border_blue {
+				border: 2px solid blue;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div>
+			<h1>Lab 1</h1>
+			<h2>Dhanesh kumar - dhanesh.chandrasekaran1@marist.edu</h2>
+		</div>
+		<div>
+			<label for="body_text_input">Body Text:</label>
+			<input type="text" id="body_text_input">
+		</div>
+		<div>
+			<label for="quantity_input">Quantity:</label>
+			<input type="text" id="quantity_input">
+		</div>
+		<div>
+			<label for="color_select">Color:</label>
+			<select id="color_select">
+				<option value="">Select a Color</option>
+				<option value="red">Red</option>
+				<option value="blue">Blue</option>
+				<option value="green">Green</option>
+			</select>
+		</div>
+		<div>
+			<input type="button" id="run_lab" value="Run Lab">
+			<input type="button" id="reset_lab" value="Reset Lab">
+		</div>
+		<div>
+			<h1>Result</h1>
+			<div id="result">
+			</div>
+		</div>
+		<script type="text/javascript">
+			var bodyTextInput = document.getElementById('body_text_input');
+			var quantityInput = document.getElementById('quantity_input');
+			var colorSelect = document.getElementById('color_select');
+			var runBtn = document.getElementById('run_lab');
+			var resetBtn = document.getElementById('reset_lab');
+			var resDiv = document.getElementById('result');
+
+			function clearInputs() {
+				bodyTextInput.value = '';
+				quantityInput.value = '';
+				colorSelect.value = '';
+			}
+
+			function clearOutput() {
+				while(resDiv.firstChild) {
+					resDiv.removeChild(resDiv.firstChild);
+				}
+			}
+
+			function runLab() {
+				//Get the values from the input elements
+				var body = bodyTextInput.value;
+				var quantityText = quantityInput.value;
+				var color = colorSelect.value;
+				//Validate the values
+				if(body.trim() === '') {
+					alert('Body Text cannot be empty or spaces.\nEnter valid Text and retry.');
+					return;
+				}
+				if(quantityText.trim() === '') {
+					alert('Quantity cannot be empty or spaces.\nEnter a valid Number and retry.');
+					return;
+				}
+				var quantity = parseInt(quantityText);
+				if(isNaN(quantity)) {
+					alert('Quantity cannot be parsed into a Number.\nEnter a valid Number and retry.');
+					return;
+				}
+				if(color.trim() === '') {
+					alert('Please select a color and retry.');
+					return;
+				}
+				//Clear the result layer
+				clearOutput();
+				//Perform the action
+				for(var counter = 1; counter <= quantity; counter++) {
+					//Create title element
+					var titleH2 = document.createElement('h2');
+					titleH2.appendChild(document.createTextNode("Output " + counter));
+					titleH2.className = "text_" + color;
+					//Create text body element
+					var contentPara = document.createElement('p');
+					contentPara.appendChild(document.createTextNode(body));
+					//Create overall container element
+					var containerDiv = document.createElement('div');
+					containerDiv.appendChild(titleH2);
+					containerDiv.appendChild(contentPara);
+					containerDiv.className = "border_" + color;
+					//Append to results element
+					resDiv.appendChild(containerDiv);
+				}
+				//Clear the input elements
+				clearInputs();
+				//Enable the reset button
+				resetBtn.disabled = false;
+			}
+
+			function resetLab() {
+				//Clear the input elements
+				clearInputs();
+				//Clear the result layer
+				clearOutput();
+				//Disable the reset button
+				resetBtn.disabled = true;
+			}
+
+			//Disable the reset button initially
+			resetBtn.disabled = true;
+			//Attach the click event listener to run button
+			runBtn.addEventListener('click', runLab);
+			//Attach the click event listener to reset button
+			resetBtn.addEventListener('click', resetLab);
+		</script>
+	</body>
+</html>
